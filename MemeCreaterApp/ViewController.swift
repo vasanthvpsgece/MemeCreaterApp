@@ -31,10 +31,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         // Do any additional setup after loading the view, typically from a nib.
         
         // Setting up default value for top and bottom text field. Also setting up delegate for top and bottom text field
-        topTextField.text = "TOP"
-        bottomTextField.text = "BOTTOM"
-        self.topTextField.delegate = self
-        self.bottomTextField.delegate = self
+        configureTextField(topTextField, "TOP")
+        configureTextField(bottomTextField, "BOTTOM")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,12 +56,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     // Image picker controller for photo library
     
+    func configureTextField(_ textField: UITextField, _ withText: String) {
+        textField.text = withText;
+        textField.delegate = self;
+    }
+    
     @IBAction func imagePicker(_ sender: Any) {
         
         let pickImageViewController = UIImagePickerController()
-        pickImageViewController.delegate = self
-        pickImageViewController.sourceType = .photoLibrary
-        self.present(pickImageViewController, animated: true, completion: nil)
+        chooseImg(pickImageViewController, .photoLibrary)
     }
     
     // Image picker controller for camera
@@ -71,9 +72,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBAction func imageCamera(_ sender: Any) {
         
         let cameraImageViewController = UIImagePickerController()
-        cameraImageViewController.delegate = self
-        cameraImageViewController.sourceType = .camera
-        self.present(cameraImageViewController, animated: true, completion: nil)
+        chooseImg(cameraImageViewController, .camera)
+    }
+    
+    func chooseImg(_ imgController: UIImagePickerController, _ srcType: UIImagePickerControllerSourceType) {
+        imgController.delegate = self
+        imgController.sourceType = srcType
+        self.present(imgController, animated: true, completion: nil)
     }
     
     // Delegate functions for UIImagePickerControllerDelegate
