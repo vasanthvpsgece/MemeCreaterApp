@@ -10,14 +10,8 @@ import UIKit
 
 // Defining structure object
 
-struct Meme {
-    var topText: String
-    var bottomText: String
-    var originalImage: UIImage
-    var memedImage: UIImage
-}
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class MemeViewController: UIViewController, UINavigationControllerDelegate {
 
     // Outlets for all storyboard elements
     @IBOutlet weak var imageViewer: UIImageView!
@@ -40,7 +34,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         // Disabling the Share activity button if there is no image loaded to edit
         if imageViewer.image == nil {
-            shareButton.isEnabled = false;
+            shareButton.isEnabled = false
         }
         
         // Disabling the camera button if the target device does not have in-built camera source
@@ -57,71 +51,31 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     // Image picker controller for photo library
     
     func configureTextField(_ textField: UITextField, _ withText: String) {
-        textField.text = withText;
-        textField.delegate = self;
+        
+        let memeTextAttributes: [String:Any] = [
+            NSStrokeColorAttributeName: UIColor.black,
+            NSForegroundColorAttributeName: UIColor.white,
+            NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
+            NSStrokeWidthAttributeName: -3]
+        
+        textField.delegate = self
+        textField.defaultTextAttributes = memeTextAttributes
+        textField.textAlignment = .center
+        textField.borderStyle = .none
+        textField.text = withText
+    
     }
     
     @IBAction func imagePicker(_ sender: Any) {
-        
-        let pickImageViewController = UIImagePickerController()
-        chooseImg(pickImageViewController, .photoLibrary)
+        chooseImg(.photoLibrary)
     }
     
     // Image picker controller for camera
     
     @IBAction func imageCamera(_ sender: Any) {
+        chooseImg(.camera)
+    }
         
-        let cameraImageViewController = UIImagePickerController()
-        chooseImg(cameraImageViewController, .camera)
-    }
-    
-    func chooseImg(_ imgController: UIImagePickerController, _ srcType: UIImagePickerControllerSourceType) {
-        imgController.delegate = self
-        imgController.sourceType = srcType
-        self.present(imgController, animated: true, completion: nil)
-    }
-    
-    // Delegate functions for UIImagePickerControllerDelegate
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        
-        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            imageViewer.image = image
-            shareButton.isEnabled = true
-        }
-        dismiss(animated: true, completion: nil)
-        
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    // Delegate functions for Text field delegate
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        if textField.text == "TOP" || textField.text == "BOTTOM" {
-            textField.text = ""
-        }
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        if textField.text == "" {
-            if textField.restorationIdentifier == "TOP" {
-                textField.text = "TOP"
-            }
-            
-            if textField.restorationIdentifier == "BOTTOM" {
-                textField.text = "BOTTOM"
-            }
-        }
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
     // Subscribe to keyboard notification to change the height of the view if keyboard appears and disappears
     
     func subscribeToKeyboardNotification() {
