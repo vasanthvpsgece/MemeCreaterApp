@@ -156,9 +156,13 @@ class MemeViewController: UIViewController, UINavigationControllerDelegate {
     }
     
     func save(_ memedImg: UIImage) {
+        
         if topTextField.text != nil && bottomTextField.text != nil && imageViewer.image != nil {
-        _ = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: imageViewer.image!, memedImage: memedImg)
+            let meme = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: imageViewer.image!, memedImage: memedImg)
+            
+            (UIApplication.shared.delegate as! AppDelegate).memes.append(meme)
         }
+        print((UIApplication.shared.delegate as! AppDelegate).memes)
     }
 }
 
