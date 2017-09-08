@@ -162,7 +162,6 @@ class MemeViewController: UIViewController, UINavigationControllerDelegate {
             
             (UIApplication.shared.delegate as! AppDelegate).memes.append(meme)
         }
-        print((UIApplication.shared.delegate as! AppDelegate).memes)
     }
 }
 

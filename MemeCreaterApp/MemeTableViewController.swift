@@ -17,13 +17,14 @@ class MemeTableViewController: UIViewController, UITableViewDataSource, UITableV
     }
 
     internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "sharedMeme")
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "sharedMeme")!
         let sharedMemeImg = self.sharedMeme[(indexPath as NSIndexPath).row]
         
-        cell?.textLabel?.text = sharedMemeImg.topText
-        cell?.imageView?.image = sharedMemeImg.memedImage
-     
-        return cell!
+        cell.textLabel?.text = sharedMemeImg.topText
+        cell.imageView?.image = sharedMemeImg.memedImage
+        
+        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -31,5 +32,6 @@ class MemeTableViewController: UIViewController, UITableViewDataSource, UITableV
         let detailController = self.storyboard!.instantiateViewController(withIdentifier: "SavedMemeImg") as! ShowMemeViewController
         detailController.savedMeme = self.sharedMeme[(indexPath as NSIndexPath).row]
         self.navigationController!.pushViewController(detailController, animated: true)
+        
     }
 }

@@ -26,12 +26,11 @@ extension MemeViewController: UIImagePickerControllerDelegate {
             imageViewer.image = image
             shareButton.isEnabled = true
         }
-        dismiss(animated: true, completion: nil)
-        
+        self.dismiss(animated: true, completion: nil)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
 
 }
