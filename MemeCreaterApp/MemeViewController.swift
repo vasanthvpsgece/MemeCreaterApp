@@ -19,6 +19,8 @@ class MemeViewController: UIViewController, UINavigationControllerDelegate {
     @IBOutlet weak var topTextField: UITextField!
     @IBOutlet weak var bottomTextField: UITextField!
     @IBOutlet weak var shareButton: UIBarButtonItem!
+    @IBOutlet weak var navBar: UINavigationBar!
+    @IBOutlet weak var toolBar: UIToolbar!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,11 +42,15 @@ class MemeViewController: UIViewController, UINavigationControllerDelegate {
         // Disabling the camera button if the target device does not have in-built camera source
         cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
         subscribeToKeyboardNotification()
+        self.tabBarController?.tabBar.isHidden = true
+        self.navigationController?.navigationBar.isHidden = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unsubscribeFromKeyboardNotifications()
+        self.tabBarController?.tabBar.isHidden = false
+        self.navigationController?.navigationBar.isHidden = false
     }
 
 
@@ -129,7 +135,9 @@ class MemeViewController: UIViewController, UINavigationControllerDelegate {
         
         navBarToolBarHide(true)
         
+        //UIGraphicsBeginImageContext(self.view.frame.size)
         UIGraphicsBeginImageContext(self.view.frame.size)
+        //view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
         view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
         let memedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
@@ -142,8 +150,11 @@ class MemeViewController: UIViewController, UINavigationControllerDelegate {
     // Hiding the Navigation bar and Tool bar temporarily to capture the memed image
     
     func navBarToolBarHide(_ hidden: Bool) {
-        self.navigationController?.setToolbarHidden(hidden, animated: true)
-        self.navigationController?.setNavigationBarHidden(hidden, animated: false)
+        /*self.navigationController?.setToolbarHidden(hidden, animated: true)
+        self.navigationController?.setNavigationBarHidden(hidden, animated: false)*/
+        
+        self.navBar.isHidden = hidden
+        self.toolBar.isHidden = hidden
     }
     
     // Clicling cancel button will clear the image and entered text in top and bottom text field and disable the share button since the image is cleared
@@ -153,6 +164,7 @@ class MemeViewController: UIViewController, UINavigationControllerDelegate {
         topTextField.text = "TOP"
         bottomTextField.text = "BOTTOM"
         shareButton.isEnabled = false
+        self.navigationController?.popToRootViewController(animated: true)
     }
     
     func save(_ memedImg: UIImage) {
@@ -160,7 +172,10 @@ class MemeViewController: UIViewController, UINavigationControllerDelegate {
         if topTextField.text != nil && bottomTextField.text != nil && imageViewer.image != nil {
             let meme = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: imageViewer.image!, memedImage: memedImg)
             
-            (UIApplication.shared.delegate as! AppDelegate).memes.append(meme)
+            let object = UIApplication.shared.delegate
+            let appDelegate = object as! AppDelegate
+            appDelegate.memes.append(meme)
+            
         }
     }
 }

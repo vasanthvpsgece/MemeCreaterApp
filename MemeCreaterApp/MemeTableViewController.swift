@@ -10,7 +10,28 @@ import UIKit
 
 class MemeTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    let sharedMeme = (UIApplication.shared.delegate as! AppDelegate).memes
+    @IBOutlet weak var savedMemeTableView: UITableView!
+    var sharedMeme = [Meme]()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        savedMemeTableView.delegate = self
+        savedMemeTableView.dataSource = self
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(MemeTableViewController.createMeme))
+    }
+    
+    func createMeme() {
+        if let navigationController = self.navigationController {
+            let detailController = self.storyboard!.instantiateViewController(withIdentifier: "memeCreater")
+            navigationController.pushViewController(detailController, animated: true)
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        sharedMeme = (UIApplication.shared.delegate as! AppDelegate).memes
+        self.savedMemeTableView.reloadData()
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.sharedMeme.count
@@ -23,14 +44,13 @@ class MemeTableViewController: UIViewController, UITableViewDataSource, UITableV
         
         cell.textLabel?.text = sharedMemeImg.topText
         cell.imageView?.image = sharedMemeImg.memedImage
-        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let detailController = self.storyboard!.instantiateViewController(withIdentifier: "SavedMemeImg") as! ShowMemeViewController
-        detailController.savedMeme = self.sharedMeme[(indexPath as NSIndexPath).row]
+        let detailController = self.storyboard!.instantiateViewController(withIdentifier: "savedMemeImg") as! ShowMemeCollectionViewController
+        (UIApplication.shared.delegate as! AppDelegate).index = indexPath
         self.navigationController!.pushViewController(detailController, animated: true)
         
     }
